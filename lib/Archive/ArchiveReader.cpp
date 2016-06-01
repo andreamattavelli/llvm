@@ -504,7 +504,7 @@ Archive::findModuleDefiningSymbol(const std::string& symbol,
 // Modules that define those symbols.
 bool
 Archive::findModulesDefiningSymbols(std::set<std::string>& symbols,
-                                    std::set<Module*>& result,
+                                    std::vector<Module*>& result,
                                     std::string* error) {
   if (!mapfile || !base) {
     if (error)
@@ -576,7 +576,10 @@ Archive::findModulesDefiningSymbols(std::set<std::string>& symbols,
     if (m) {
       // The symbol exists, insert the Module into our result, duplicates will
       // be ignored.
-      result.insert(m);
+
+      if (result.end() == std::find(result.begin(), result.end(), m)) {
+	result.push_back(m);
+      }
 
       // Remove the symbol now that its been resolved, being careful to
       // post-increment the iterator.
